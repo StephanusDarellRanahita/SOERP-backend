@@ -167,7 +167,7 @@ class QuotationController extends Controller
         $ticket = Ticket::find($quotation->id_ticket);
         if ($request->status === 'Accepted') {
             $ticket->update([
-                'status' => "WIP",
+                'status' => "Closed",
             ]);
 
             $romanMonths = [

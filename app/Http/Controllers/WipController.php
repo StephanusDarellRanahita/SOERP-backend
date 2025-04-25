@@ -110,7 +110,7 @@ class WipController extends Controller
         ]);
     }
 
-    public function uploadPhotoInfo(Request $request)
+    public function uploadPhotoInfo(Request $request, $company)
     {
         $request->validate([
             'photo' => 'required|image',
@@ -130,7 +130,7 @@ class WipController extends Controller
         $originalName = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $photo->getClientOriginalExtension();
         $fileName = $timestamp . '_' . str_replace(' ', '_', $originalName) . '.' . $extension;
-        $folderPath = $cleanWipId . '/desc';
+        $folderPath = $company . '/' . $cleanWipId . '/desc';
 
         $storedPath = $photo->storeAs($folderPath, $fileName, 'public');
 
@@ -249,6 +249,8 @@ class WipController extends Controller
             'photo' => json_encode($photos),
             'photo_desc' => json_encode($descs)
         ]);
+
+        Storage::disk('public')->delete($request->path);
 
         return response()->json([
             'success' => true,

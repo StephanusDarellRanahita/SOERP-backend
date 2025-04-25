@@ -57,7 +57,8 @@ class UserController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken('auth_token')->accessToken;
+        // $token = $user->createToken('auth_token')->accessToken;
+        $token = $user->createTokenWithExpiry('auth_token')->accessToken;
 
         return response()->json([
             'message' => 'Login successful',
@@ -66,10 +67,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function getUser() {
+    public function getUser()
+    {
         $user = Auth::user();
 
-        if(!$user) {
+        if (!$user) {
             return response()->json(['message' => 'Unauthorized']);
         }
 
@@ -79,7 +81,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function getAllUser() {
+    public function getAllUser()
+    {
         $user = User::all();
 
         return response()->json([

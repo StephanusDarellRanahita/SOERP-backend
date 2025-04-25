@@ -36,7 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('post-deletefiles', [WipController::class, 'deleteFiles']);
     Route::post('post-deleteothers', [WipController::class, 'deleteOtherFiles']);
     Route::post('post-deletephotoinfo', [WipController::class, 'deletePhotoInfo']);
-    Route::post('post-photoinfo', [WipController::class, 'uploadPhotoInfo']);
+    Route::post('post-photoinfo/{company}', [WipController::class, 'uploadPhotoInfo']);
     Route::put('put-quotstatus/{id}', [QuotationController::class, 'changeStatus']);
     Route::put('put-infodesc/{id}', [WipController::class, 'updateInfo']);
 });

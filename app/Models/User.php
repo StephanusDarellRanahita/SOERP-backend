@@ -27,11 +27,24 @@ class User extends Authenticatable
         'avatar',
     ];
 
-    public function ticket() {
+    public function createTokenWithExpiry($name, $scopes = [])
+    {
+        // Atur expire date ke 1 hari
+        $tokenResult = $this->createToken($name, $scopes);
+        $token = $tokenResult->token;
+        $token->expires_at = now()->addDay();
+        $token->save();
+
+        return $tokenResult;
+    }
+
+    public function ticket()
+    {
         return $this->hasMany(Ticket::class, 'id_user', 'id');
     }
 
-    public function quotation() {
+    public function quotation()
+    {
         return $this->hasMany(Quotation::class, 'id_user', 'id');
     }
 

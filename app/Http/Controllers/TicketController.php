@@ -76,8 +76,8 @@ class TicketController extends Controller
         $sumTicket = Ticket::where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
         $tktOpen = Ticket::where('status', 'Open')->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
         $tktQuot = Ticket::where('status', 'Quotation')->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
-        $tktWip = Ticket::where('status', 'WIP')->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
-        $tktClose = Ticket::where('status', 'Closed')->orWhere('status', 'Canceled')->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
+        $tktCanceled = Ticket::where('status', 'Canceled')->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
+        $tktClose = Ticket::where('status', 'Closed')->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count();
         return response()->json([
             'success' => true,
             'message' => 'Retrieve all ticket success',
@@ -85,7 +85,7 @@ class TicketController extends Controller
             'sum' => $sumTicket,
             'open' => $tktOpen,
             'quot' => $tktQuot,
-            'wip' => $tktWip,
+            'canceled' => $tktCanceled,
             'close' => $tktClose
         ]);
     }
