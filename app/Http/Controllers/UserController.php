@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Ticket;
 
 class UserController extends Controller
 {
@@ -67,17 +68,18 @@ class UserController extends Controller
         ]);
     }
 
-    public function getUser()
+    public function getUser($company)
     {
         $user = Auth::user();
-
+        $task = Ticket::where('assign', $user->id)->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count('assign');
         if (!$user) {
             return response()->json(['message' => 'Unauthorized']);
         }
 
         return response()->json([
             'message' => 'User retrieved sucessfully',
-            'user' => $user
+            'user' => $user,
+            'task' => $task
         ]);
     }
 

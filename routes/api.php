@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WipController;
@@ -17,7 +18,7 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('get-user', [UserController::class, 'getUser']);
+    Route::get('get-user/{company}', [UserController::class, 'getUser']);
     Route::get('get-alluser', [UserController::class, 'getAllUser']);
     Route::get('get-client', [ClientController::class, 'getClient']);
     Route::get('get-allticket/{company}', [TicketController::class, 'getAllTicket']);
@@ -26,17 +27,21 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-allwip/{company}', [WipController::class, 'getAllWip']);
     Route::get('get-wipbyid/{id}', [WipController::class, 'getWipById']);
     Route::get('get-wipage/{company}', [WipController::class, 'wipAge']);
+    Route::get('get-allfiles/{company}', [FileController::class, 'getAllFiles']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::post('post-client', [ClientController::class, 'uploadClient']);
     Route::post('post-ticket/{company}', [TicketController::class, 'uploadTicket']);
     Route::post('post-quotation', [QuotationController::class, 'uploadQuotation']);
     Route::post('post-wipatt', [WipController::class, 'uploadWipAtt']);
-    Route::post('post-files/{company}', [WipController::class, 'uploadFiles']);
+    Route::post('post-wipfiles/{company}', [WipController::class, 'uploadFiles']);
     Route::post('post-otherfiles/{company}', [WipController::class, 'uploadOtherFiles']);
     Route::post('post-deletefiles', [WipController::class, 'deleteFiles']);
     Route::post('post-deleteothers', [WipController::class, 'deleteOtherFiles']);
     Route::post('post-deletephotoinfo', [WipController::class, 'deletePhotoInfo']);
     Route::post('post-photoinfo/{company}', [WipController::class, 'uploadPhotoInfo']);
+    Route::post('post-files/{company}', [FileController::class, 'uploadFiles']);
+    Route::post('post-folder/{company}', [FileController::class, 'uploadFolder']);
     Route::put('put-quotstatus/{id}', [QuotationController::class, 'changeStatus']);
     Route::put('put-infodesc/{id}', [WipController::class, 'updateInfo']);
+    Route::put('put-acceptwip/{id}', [WipController::class, 'acceptWip']);
 });

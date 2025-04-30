@@ -38,7 +38,7 @@ class QuotationController extends Controller
         $user = Auth::user();
         if (!$hasTicket) {
             $rev = 0;
-            $count = Quotation::distinct('quot_id')->where('quot_id', 'LIKE', '%/' . $request->payload['company'] . '%/')->count('quote_id');
+            $count = Quotation::distinct('quot_id')->where('quot_id', 'LIKE', '%/' . $request->payload['company'] . '/%')->count('quote_id');
             $number = $count + 1;
             $number = str_pad($number, 3, '0', STR_PAD_LEFT);
             $month = date('n');
@@ -184,7 +184,7 @@ class QuotationController extends Controller
                 11 => 'XI',
                 12 => 'XII'
             ];
-            $count = Wip::distinct('wip_id')->where('wip_id', 'LIKE', '%/' . $request->company . '%/')->count('wip_id');
+            $count = Wip::distinct('wip_id')->where('wip_id', 'LIKE', '%/' . $request->company . '/%')->count('wip_id');
             $number = $count + 1;
             $number = str_pad($number, 3, '0', STR_PAD_LEFT);
             $month = date('n');

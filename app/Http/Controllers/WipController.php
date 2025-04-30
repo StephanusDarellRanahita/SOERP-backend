@@ -177,6 +177,21 @@ class WipController extends Controller
         ]);
     }
 
+    public function acceptWip($id)
+    {
+        $wip = Wip::where('id', $id)->first();
+
+        $wip->update([
+            'status' => 'Closed'
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => $wip->wip_id . ' accepted',
+            'wip' => $wip
+        ]);
+    }
+
     public function deleteFiles(Request $request)
     {
         $request->validate([
