@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Wip;
 use App\Models\Ticket;
 
 class UserController extends Controller
@@ -71,7 +72,11 @@ class UserController extends Controller
     public function getUser($company)
     {
         $user = Auth::user();
-        $task = Ticket::where('assign', $user->id)->where('ticket_id', 'LIKE', '%/' . $company . '/%')->count('assign');
+        $task = Ticket::where('assign', $user->id)->where('ticket_id', 'LIKE', '%/' . $company . '/%')->where('status', '!=', 'Canceled')->where('status', '!=', 'Closed')->count('assign');
+        $wip = Wip::whereHas('ticket', function ($query) use ($user) {
+            $query->where('assign', $user->id);
+        })->where('status', '==', 'On Going')->count();
+
         if (!$user) {
             return response()->json(['message' => 'Unauthorized']);
         }
@@ -79,7 +84,8 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User retrieved sucessfully',
             'user' => $user,
-            'task' => $task
+            'task' => $task,
+            'wip' => $wip
         ]);
     }
 

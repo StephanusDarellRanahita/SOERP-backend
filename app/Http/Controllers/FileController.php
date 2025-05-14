@@ -103,6 +103,68 @@ class FileController extends Controller
         ]);
     }
 
+    public function deleteFile(Request $request)
+    {
+        $request->validate([
+            'path' => 'required',
+        ]);
+
+        if ($request->path['type'] === 'folder') {
+            $this->deleteFolders($request->path['id']);
+            Storage::disk('public')->deleteDirectory($request->path['path']);
+        } else {
+            $file = File::where('file', $request->path['path'])->first();
+
+            if (!$file) {
+                return response()->json([
+                    'message' => "File not found!",
+                    $request->path
+                ]);
+            }
+
+            $file->delete();
+
+            Storage::disk('public')->delete($request->path);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File deleted successfully',
+            'path' => $request->path
+        ]);
+    }
+    public function deleteFiles(Request $request)
+    {
+        $request->validate([
+            'files.*' => 'required',
+        ]);
+        foreach ($request->input('files') as $files) {
+            if ($files['type'] === 'folder') {
+                $this->deleteFolders($files['id']);
+                Storage::disk('public')->deleteDirectory($files['path']);
+            } else {
+                $file = File::where('file', $files['path'])->first();
+
+                $file->delete();
+                Storage::disk('public')->delete($files['path']);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File deleted successfully',
+        ]);
+    }
+    private function deleteFolders($folderId)
+    {
+        $subfolders = Folder::where('id_folder', $folderId)->get();
+
+        foreach ($subfolders as $subfolder) {
+            $this->deleteFolders($subfolder->id);
+        }
+
+        Folder::where('id', $folderId)->delete();
+    }
     public function getAllFiles($company)
     {
         $folders = Folder::where('company', $company)->get();

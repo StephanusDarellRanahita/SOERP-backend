@@ -21,6 +21,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-user/{company}', [UserController::class, 'getUser']);
     Route::get('get-alluser', [UserController::class, 'getAllUser']);
     Route::get('get-client', [ClientController::class, 'getClient']);
+    Route::get('get-countclient', [ClientController::class, 'countClient']);
     Route::get('get-allticket/{company}', [TicketController::class, 'getAllTicket']);
     Route::get('get-quotation/{id}', [QuotationController::class, 'getQuotation']);
     Route::get('get-allquotation/{company}', [QuotationController::class, 'getAllQuotation']);
@@ -30,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-allfiles/{company}', [FileController::class, 'getAllFiles']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::post('post-client', [ClientController::class, 'uploadClient']);
+    Route::post('post-detailclient', [ClientController::class, 'uploadDetailClient']);
     Route::post('post-ticket/{company}', [TicketController::class, 'uploadTicket']);
     Route::post('post-quotation', [QuotationController::class, 'uploadQuotation']);
     Route::post('post-wipatt', [WipController::class, 'uploadWipAtt']);
@@ -41,6 +43,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('post-photoinfo/{company}', [WipController::class, 'uploadPhotoInfo']);
     Route::post('post-files/{company}', [FileController::class, 'uploadFiles']);
     Route::post('post-folder/{company}', [FileController::class, 'uploadFolder']);
+    Route::post('post-deletefile', [FileController::class, 'deleteFile']);
+    Route::post('post-deletefiles', [FileController::class, 'deleteFiles']);
+    Route::put('put-client/{id}', [ClientController::class, 'updateClient']);
     Route::put('put-quotstatus/{id}', [QuotationController::class, 'changeStatus']);
     Route::put('put-infodesc/{id}', [WipController::class, 'updateInfo']);
     Route::put('put-acceptwip/{id}', [WipController::class, 'acceptWip']);
