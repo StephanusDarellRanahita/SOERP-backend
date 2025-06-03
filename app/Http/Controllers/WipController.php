@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invdesc;
+use App\Models\Invoice;
 use App\Models\Quotation;
 use App\Models\Ticket;
 use App\Models\Wip;
@@ -177,18 +179,76 @@ class WipController extends Controller
         ]);
     }
 
-    public function acceptWip($id)
+    public function acceptWip(Request $request, $id)
     {
         $wip = Wip::where('id', $id)->first();
+        $user = Auth::user();
+
+        $quotation = Quotation::where('id_ticket', $wip->id_ticket)->with('quotDesc')->first();
+        $romanMonths = [
+            1 => 'I',
+            2 => 'II',
+            3 => 'III',
+            4 => 'IV',
+            5 => 'V',
+            6 => 'VI',
+            7 => 'VII',
+            8 => 'VIII',
+            9 => 'IX',
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII'
+        ];
+
+        $count = Invoice::distinct('invoice_id')->where('invoice_id', 'LIKE', '%/' . $request->company . '/%')->count('invoice_id');
+        $number = $count + 1;
+        $number = str_pad($number, 3, '0', STR_PAD_LEFT);
+        $month = date('n');
+        $year = date('y');
+        $invoice_id = 'INV/' . $number . '/' . $request->company . '/' . $romanMonths[$month] . '/' . $year;
+
+        $invoice = Invoice::create([
+            'id_user' => $user->id,
+            'id_client' => $quotation->id_client,
+            'id_ticket' => $quotation->id_ticket,
+            'id_quotation' => $quotation->id,
+            'invoice_id' => $invoice_id,
+            'equipment' => $quotation->equipment,
+            'reff_requisition' => $quotation->reff_requisition,
+            'disc' => $quotation->disc,
+            'disc_type' => $quotation->disc_type,
+            'valid_until' => $quotation->valid_until,
+            'currency' => $quotation->currency,
+            'company' => $quotation->company,
+            'rev' => 0,
+            'total' => $quotation->total,
+            'status' => 'Pending',
+            'terms_conditions' => $quotation->terms_conditions
+        ]);
+
+        foreach ($quotation->quotDesc as $item) {
+            $allInvDesc[] = Invdesc::create([
+                'id_invoice' => $invoice->id,
+                'id' => $item['id'],
+                'desc' => $item['desc'],
+                'parent' => $item['parent'],
+                'qty' => $item['qty'],
+                'unit' => $item['unit'],
+                'price' => $item['price'],
+                'total' => $item['total'],
+                'remark' => $item['remark']
+            ]);
+        }
 
         $wip->update([
             'status' => 'Closed'
         ]);
-
         return response()->json([
             'success' => true,
             'message' => $wip->wip_id . ' accepted',
-            'wip' => $wip
+            'wip' => $wip,
+            'invoice' => $invoice,
+            'invdesc' => $allInvDesc
         ]);
     }
 
@@ -342,8 +402,9 @@ class WipController extends Controller
                     $totalDisc = $disc;
                 }
             }
+            $total = $total - $totalDisc;
             $tax = $total * (11 / 100);
-            $afterTax = $total - $totalDisc + $tax;
+            $afterTax = $total + $tax;
 
             $data[] = [
                 'age' => $age,

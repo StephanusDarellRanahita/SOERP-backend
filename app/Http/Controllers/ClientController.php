@@ -134,6 +134,23 @@ class ClientController extends Controller
         ]);
     }
 
+    public function deleteClient($id)
+    {
+        $client = Client::where('id', $id)->first();
+
+        if (!$client) {
+            return response()->json([
+                'message' => "Client not found"
+            ]);
+        }
+
+        $client->delete();
+        return response()->json([
+            'success' => true,
+            'message' => $client->name . " deleted successfully"
+        ]);
+    }
+
     public function getClient()
     {
         $client = Client::all();

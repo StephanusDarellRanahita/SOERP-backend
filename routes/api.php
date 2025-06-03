@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WipController;
@@ -29,8 +31,13 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-wipbyid/{id}', [WipController::class, 'getWipById']);
     Route::get('get-wipage/{company}', [WipController::class, 'wipAge']);
     Route::get('get-allfiles/{company}', [FileController::class, 'getAllFiles']);
+    Route::get('get-allinvoice/{company}', [InvoiceController::class, 'getAllInvoice']);
+    Route::get('get-invoice/{id}', [InvoiceController::class, 'getInvoice']);
     Route::post('logout', [UserController::class, 'logout']);
+    Route::post('post-photoprofile', [UserController::class, 'updatePhotoProfile']);
+    Route::post('post-updateprofile', [UserController::class, 'updateProfile']);
     Route::post('post-client', [ClientController::class, 'uploadClient']);
+    Route::post('post-deleteclient/{id}', [ClientController::class, 'deleteClient']);
     Route::post('post-detailclient', [ClientController::class, 'uploadDetailClient']);
     Route::post('post-ticket/{company}', [TicketController::class, 'uploadTicket']);
     Route::post('post-quotation', [QuotationController::class, 'uploadQuotation']);
@@ -45,8 +52,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('post-folder/{company}', [FileController::class, 'uploadFolder']);
     Route::post('post-deletefile', [FileController::class, 'deleteFile']);
     Route::post('post-deletefiles', [FileController::class, 'deleteFiles']);
+    Route::post('post-invoice', [InvoiceController::class, 'uploadInvoice']);
+    Route::post('post-pa/{company}', [PaController::class, 'uploadPa']);
     Route::put('put-client/{id}', [ClientController::class, 'updateClient']);
     Route::put('put-quotstatus/{id}', [QuotationController::class, 'changeStatus']);
     Route::put('put-infodesc/{id}', [WipController::class, 'updateInfo']);
     Route::put('put-acceptwip/{id}', [WipController::class, 'acceptWip']);
+    Route::put('put-acceptinv/{id}', [InvoiceController::class, 'acceptInvoice']);
 });
