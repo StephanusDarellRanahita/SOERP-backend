@@ -10,7 +10,9 @@ class Paatt extends Model
     protected $fillable = [
         'id_pa',
         'path',
-        'name'
+        'name',
+        'size',
+        'type'
     ];
 
     public function pa()

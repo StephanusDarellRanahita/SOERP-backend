@@ -7,6 +7,7 @@ use App\Http\Controllers\PaController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WipController;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', HandleCors::class])->group(function () {
     Route::get('get-user/{company}', [UserController::class, 'getUser']);
     Route::get('get-alluser', [UserController::class, 'getAllUser']);
     Route::get('get-client', [ClientController::class, 'getClient']);
@@ -33,6 +34,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-allfiles/{company}', [FileController::class, 'getAllFiles']);
     Route::get('get-allinvoice/{company}', [InvoiceController::class, 'getAllInvoice']);
     Route::get('get-invoice/{id}', [InvoiceController::class, 'getInvoice']);
+    Route::get('get-allpa/{company}', [PaController::class, 'getAllPa']);
+    Route::get('get-pa/{id}', [PaController::class, 'getPa']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::post('post-photoprofile', [UserController::class, 'updatePhotoProfile']);
     Route::post('post-updateprofile', [UserController::class, 'updateProfile']);

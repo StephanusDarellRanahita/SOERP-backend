@@ -9,26 +9,30 @@ use App\Models\Invoice;
 class Pa extends Model
 {
     protected $fillable = [
-        'id_user',
+        'applicant',
         'ref_inv',
         'pa_id',
+        'bank',
+        'bank_account',
         'desc',
         'category',
         'project',
         'operation_device',
         'remark',
         'total',
-        'rev'
+        'currency',
+        'rev',
+        'status'
     ];
 
-    public function user()
+    public function applicant()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'applicant', 'id');
     }
 
     public function invoice()
     {
-        return $this->belongsTo(Invoice::class, 'reff_inv', 'id');
+        return $this->belongsTo(Invoice::class, 'ref_inv', 'id');
     }
 
     public function paitem()

@@ -111,10 +111,16 @@ class InvoiceController extends Controller
             'client',
             'ticket.assign',
             'invdesc' => function ($query) {
-                $query->whereNull('parent');
+                $query->whereNotNull('parent');
             }
         ])->where('status', 'Accepted')->get();
 
+        $accInvoice->each(function ($inv) {
+            $inv->invdesc = $inv->invdesc->map(function ($item) {
+                $item->approve_price = $item->total;
+                return $item;
+            });
+        });
         return response()->json([
             'success' => true,
             'message' => 'Retrieve invoice success',
